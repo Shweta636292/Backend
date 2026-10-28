@@ -13,6 +13,26 @@ app.get("/",(req,res)=>{
 
 app.post("/books",async(req,res)=>{
     try{
+        const {title,author,category,quantity}=req.body;
+        if(
+            typeof title!=="string"||!title.trim()||
+            typeof author!=="string"||!author.trim()||
+            typeof category!=="string"||!category.trim()||
+            typeof quantity!=="string"||!quantity.trim()
+        ){
+            return res.status(400).json({
+                message:"all these required"
+            });
+        }
+
+        if(
+            quantity!==undefined&&(!Number.isInteger(quantity)||quantity<0)
+
+        ){
+        return res.status(400).json({
+            message:"quantity must be non negative number"
+        });
+    }
         const book=await book.create(req.body);
         res.status(201).json({
             message:"book added succesfully",
@@ -53,6 +73,30 @@ app.get("/books/:id",async(req,res)=>{
             message:"book Id invalid"
         });
     }
+});
+
+app.put("/books/:id",async(req,res)=>{
+    try{
+        const error=validateBookInput(req.body);
+        if(error){
+            return res.status(401).json({
+                message:"book input invalid"
+            });
+        }
+        const book=await book.create(req.body);
+        res.status(200).json({
+        message:"book updated"
+    });
+
+    }catch(error){
+        res.status(400).json({
+            message:error.message
+
+    });
+
+
+    }
+    
 });
 
 app.delete("/books/:id",async(req,res)=>{
