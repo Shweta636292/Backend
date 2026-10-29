@@ -60,7 +60,13 @@ app.get("/books",async(req,res)=>{
 
 app.get("/books/:id",async(req,res)=>{
     try{
-        const book=await book.findById(req.params.id);
+        const{id}=req.params;
+        if(!mongoose.isValidObjectId(id)){
+            return res.status(400).json({
+                message:"book id invalid"
+            })
+        }
+        const book=await book.findById(id);
         if(!book){
             return res.status(404).json({
                 message:"book not found"
@@ -101,7 +107,14 @@ app.put("/books/:id",async(req,res)=>{
 
 app.delete("/books/:id",async(req,res)=>{
     try{
-        const book=await book.findByIdAndDelete(req.params.id);
+        const{id}=req.params;
+
+        if(!mongoose.isValidObjectId(id)){
+            return res.status(400).json({
+                message:"book id invalid"
+            })
+        }
+        const book=await book.findByIdAndDelete(id);
         if(!book){
             return res.status(404).json({
                 message:"book not found"
