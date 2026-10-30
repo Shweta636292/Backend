@@ -46,6 +46,10 @@ const getAllBooks = async (req, res) => {
     try {
         const{search,category}=req.query;
 
+        const page=Math.max(1,parseInt(req.query.page)||1);
+        const limit=Math.min(50,parseInt(req.query.limit)||5);
+        const skip=(page-1)*limit;
+
         let filter={};
         if(search){
             filter={
@@ -61,8 +65,19 @@ const getAllBooks = async (req, res) => {
                 $options:"i"
             }
         }
-        const books = await book.find(filter);
-        res.status(200).json(books);
+        const books = await book.find(filter)
+        .skip(skip)
+        .limit(limit);
+
+        const totalBooks=await book.countDocuments(filter);
+        totalPages:Math.ceil(totalBooks/limit)
+        res.status(200).json({
+            page,
+           totalBooks,
+            limit,
+            totalPages:Math.ceil(totalBooks/limit),
+            books
+        });
     } catch (error) {
         res.status(401).json({
             message: error.message
