@@ -2,135 +2,35 @@ const express=require("express"); //import express
 const mongoose=require("mongoose");
 const dotenv=require("dotenv");
 const book=require("./models/book");
+const bookRouter=require("./routes/bookRoutes")
+const authRoutes=require("./routes/authRoutes");
+const authMiddleware = require("./middleware/authmiddleware");
+const authorizeRole = require("./middleware/authorizeRole");
 dotenv.config();
 const app=express();
 app.use(express.json());
+app.use("/api/auth",authRoutes)
 
 //test route
 app.get("/",(req,res)=>{
     res.send("hell0");
 });
-
-app.post("/books",async(req,res)=>{
-    try{
-        const {title,author,category,quantity}=req.body;
-        if(
-            typeof title!=="string"||!title.trim()||
-            typeof author!=="string"||!author.trim()||
-            typeof category!=="string"||!category.trim()||
-            typeof quantity!=="string"||!quantity.trim()
-        ){
-            return res.status(400).json({
-                message:"all these required"
-            });
-        }
-
-        if(
-            quantity!==undefined&&(!Number.isInteger(quantity)||quantity<0)
-
-        ){
-        return res.status(400).json({
-            message:"quantity must be non negative number"
-        });
-    }
-        const book=await book.create(req.body);
-        res.status(201).json({
-            message:"book added succesfully",
-            book:book
-        });
-
-    }catch(error){
-        res.status(400).json({
-            message:"error while adding book",
-            error:error.message
-        });
-    }
-});
-
-app.get("/books",async(req,res)=>{
-    try{
-        const books=await book.find();
-        res.status(200).json(books);
-        }catch(error){
-            res.status(401).json({
-                message:error.message
-            });
-    }
-})
-
-app.get("/books/:id",async(req,res)=>{
-    try{
-        const{id}=req.params;
-        if(!mongoose.isValidObjectId(id)){
-            return res.status(400).json({
-                message:"book id invalid"
-            })
-        }
-        const book=await book.findById(id);
-        if(!book){
-            return res.status(404).json({
-                message:"book not found"
-            });
-        }
-        res.status(200).json(book);
-
-    }catch(error){
-        res.status(401).json({
-            message:"book Id invalid"
-        });
-    }
-});
-
-app.put("/books/:id",async(req,res)=>{
-    try{
-        const error=validateBookInput(req.body);
-        if(error){
-            return res.status(401).json({
-                message:"book input invalid"
-            });
-        }
-        const book=await book.create(req.body);
-        res.status(200).json({
-        message:"book updated"
+app.get("/api/auth/profile", authMiddleware, (req, res) => {
+    res.status(200).json({
+        message: "Authentication successful",
+        user: req.user
     });
-
-    }catch(error){
-        res.status(400).json({
-            message:error.message
-
-    });
-
-
-    }
-    
 });
-
-app.delete("/books/:id",async(req,res)=>{
-    try{
-        const{id}=req.params;
-
-        if(!mongoose.isValidObjectId(id)){
-            return res.status(400).json({
-                message:"book id invalid"
-            })
-        }
-        const book=await book.findByIdAndDelete(id);
-        if(!book){
-            return res.status(404).json({
-                message:"book not found"
-
-            });
-        }
-        res.status(200).json({
-            message:"book deleted succesfully"
-        });
-    }catch(error){
-        res.status(400).json({
-            message:"book id invalid"
-        });
+app.get(
+    "/api/librarian",
+    authMiddleware,
+    authorizeRole("librarian"),
+    (req, res) => {
+        res.json({ message: "Welcome, librarian!" });
     }
-});
+);
 
+app.use("/books",bookRouter);
 async function startServer(){
     try{
         await mongoose.connect(process.env.MONGO_URI);

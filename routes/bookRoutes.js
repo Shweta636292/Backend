@@ -1,5 +1,6 @@
-const express=require("express");
-const router=express.Router();
+
+const express = require("express");
+const router = express.Router();
 
 const {
     createBook,
@@ -7,12 +8,37 @@ const {
     getBookById,
     updateBook,
     deleteBook
-}=require("../controllers/bookController");
+} = require("../controllers/bookController");
 
-router.post("/books",createBook);
-router.get("/",getAllBooks);
-router.get("/:id",getBookById);
-router.put("/:id",updateBook);
-router.delete("/:id",deleteBook);
+const authMiddleware = require("../middleware/authmiddleware");
+const authorizeRole = require("../middleware/authorizeRole");
+
+// Anyone can view books
+router.get("/", getAllBooks);
+router.get("/:id", getBookById);
+
+// Only librarians can change books
+router.post(
+    "/",
+    authMiddleware,
+    authorizeRole("librarian"),
+    createBook
+);
+
+router.put(
+    "/:id",
+    authMiddleware,
+    authorizeRole("librarian"),
+    updateBook
+);
+
+router.delete(
+    "/:id",
+    authMiddleware,
+    authorizeRole("librarian"),
+    deleteBook
+);
+
+module.exports = router;
 
 module.exports=router;
