@@ -13,11 +13,11 @@ const {
 const authMiddleware = require("../middleware/authmiddleware");
 const authorizeRole = require("../middleware/authorizeRole");
 
-// Anyone can view books
+
 router.get("/", getAllBooks);
 router.get("/:id", getBookById);
 
-// Only librarians can change books
+
 router.post(
     "/",
     authMiddleware,
