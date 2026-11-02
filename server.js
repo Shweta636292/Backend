@@ -6,12 +6,14 @@ const bookRouter=require("./routes/bookRoutes")
 const authRoutes=require("./routes/authRoutes");
 const authMiddleware = require("./middleware/authmiddleware");
 const borrowRoutes = require("./routes/borrowRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 const authorizeRole = require("./middleware/authorizeRole");
 dotenv.config();
 const app=express();
 app.use(express.json());
 app.use("/api/auth",authRoutes)
 app.use("/api/borrow", borrowRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 //test route
 app.get("/",(req,res)=>{
