@@ -1,21 +1,19 @@
 
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
-const jwt=require("jsonwebtoken");
-const user = require("../models/user");
+const jwt = require("jsonwebtoken");
 
+// REGISTER USER
 const registerUser = async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
-      
         if (!name || !email || !password) {
             return res.status(400).json({
                 message: "Name, email and password are required"
             });
         }
 
-       
         const existingUser = await User.findOne({
             email: email.toLowerCase().trim()
         });
@@ -26,10 +24,8 @@ const registerUser = async (req, res) => {
             });
         }
 
-   
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        
         const user = await User.create({
             name,
             email: email.toLowerCase().trim(),
@@ -47,56 +43,78 @@ const registerUser = async (req, res) => {
         });
 
     } catch (error) {
+        console.error("Registration Error:", error);
+
         res.status(500).json({
-            message: "Registration failed"
+            message: "Registration failed",
+            error: error.message
         });
     }
 };
 
-const loginUser=async(req,res)=>{
-    try{
-        const{name,password}=req.body;
+// LOGIN USER
+const loginUser = async (req, res) => {
+    try {
+        const { email, password } = req.body;
 
-        if(!name||!password){
+        if (!email || !password) {
             return res.status(400).json({
-                message:"name and password required"
+                message: "Email and password are required"
             });
         }
-        const user=await user.findOne({
-          email:email.toLowecase().trim()
+
+        const user = await User.findOne({
+            email: email.toLowerCase().trim()
         });
 
-        if(!user){
+        if (!user) {
             return res.status(401).json({
-                message:"user not found"
+                message: "Invalid email or password"
             });
         }
-        const isMatch=await bcrypt.compare({
-                password,
-                user,password
-        })
-        if(!isMatch){
+
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if (!isMatch) {
             return res.status(401).json({
-                message:"Invalid password"
+                message: "Invalid email or password"
             });
         }
-        const token=jwt.sign({
-            userId:user._id,
-            role:user.role
-        },
-         process.env.JWT_SECRET,
-        {expiresIn:"1hr"}
-        )
+
+        const token = jwt.sign(
+            {
+                userId: user._id,
+                role: user.role
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" }
+        );
+
         res.status(200).json({
-            message:"succesful login"
+            message: "Login successful",
+            token,
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
         });
 
-        
-    }catch(error){
-        res.status(500).json({
-            message:"login failed"
-        })
-    }
-}
+    } catch (error) {
+        console.error("Login Error:", error);
 
-module.exports = { registerUser,loginUser };
+        res.status(500).json({
+            message: "Login failed",
+            error: error.message
+        });
+    }
+};
+
+module.exports = {
+    registerUser,
+    loginUser
+};

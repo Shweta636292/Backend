@@ -39,4 +39,5 @@ const borrowSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-module.exports = mongoose.model("Borrow", borrowSchema);
+module.exports =
+    mongoose.models.Borrow || mongoose.model("Borrow", borrowSchema);
