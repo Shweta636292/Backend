@@ -11,35 +11,41 @@ const createBook = async (req, res) => {
             typeof title !== "string" || !title.trim() ||
             typeof author !== "string" || !author.trim() ||
             typeof category !== "string" || !category.trim() ||
-            typeof quantity !== "string" || !quantity.trim()
+            quantity === undefined || quantity === null
         ) {
             return res.status(400).json({
-                message: "all these required"
+                message: "Title, author, category and quantity are required"
             });
         }
 
         if (
-            quantity !== undefined &&
-            (!Number.isInteger(quantity) || quantity < 0)
+            !Number.isInteger(quantity) || quantity < 0
         ) {
             return res.status(400).json({
-                message: "quantity must be non negative number"
+                message: "Quantity must be a non-negative integer"
             });
         }
 
-        const newBook = await book.create(req.body);
+        const newBook = await book.create({
+            title: title.trim(),
+            author: author.trim(),
+            category: category.trim(),
+            quantity
+        });
 
         res.status(201).json({
-            message: "book added succesfully",
+            message: "Book added successfully",
             book: newBook
         });
+
     } catch (error) {
         res.status(400).json({
-            message: "error while adding book",
+            message: "Error while adding book",
             error: error.message
         });
     }
 };
+
 
 
 const getAllBooks = async (req, res) => {
@@ -112,33 +118,50 @@ const getBookById = async (req, res) => {
     }
 };
 
-
 const updateBook = async (req, res) => {
     try {
         const { id } = req.params;
+        const { title, author, category, quantity } = req.body;
+
+        if (!title && !author && !category && quantity === undefined) {
+            return res.status(400).json({
+                message: "Please provide at least one field to update"
+            });
+        }
+
+        if (quantity !== undefined &&
+            (!Number.isInteger(quantity) || quantity < 0)) {
+            return res.status(400).json({
+                message: "Quantity must be a non-negative integer"
+            });
+        }
 
         const bookData = await book.findByIdAndUpdate(
             id,
-            req.body,
+            { $set: req.body },
             { new: true, runValidators: true }
         );
 
         if (!bookData) {
             return res.status(404).json({
-                message: "book not found"
+                message: "Book not found"
             });
         }
 
         res.status(200).json({
-            message: "book updated",
+            message: "Book updated successfully",
             book: bookData
         });
+
     } catch (error) {
         res.status(400).json({
             message: error.message
         });
     }
 };
+
+
+
 
 
 const deleteBook = async (req, res) => {

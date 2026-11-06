@@ -83,6 +83,10 @@ const loginUser = async (req, res) => {
                 message: "Invalid email or password"
             });
         }
+        console.log(
+    "JWT secret available in login:",
+    Boolean(process.env.JWT_SECRET)
+);
 
         const token = jwt.sign(
             {

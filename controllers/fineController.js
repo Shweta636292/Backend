@@ -45,6 +45,8 @@ const generateFines = async (req, res) => {
             status: "borrowed",
             dueDate: { $lt: new Date() }
         });
+        console.log("Overdue records found:", overdueRecords.length);
+
 
         let generatedCount = 0;
 

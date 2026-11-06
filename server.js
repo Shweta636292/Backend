@@ -10,6 +10,7 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const fineRoutes=require("./routes/fineRoutes")
 const authorizeRole = require("./middleware/authorizeRole");
 dotenv.config();
+console.log("JWT_SECRET available:", Boolean(process.env.JWT_SECRET));
 const app=express();
 app.use(express.json());
 app.use("/api/auth",authRoutes)
