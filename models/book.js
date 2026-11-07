@@ -17,7 +17,8 @@ const bookSchema = new mongoose.Schema(
 
         category: {
             type: String,
-            required: true
+            required: true,
+            trim: true
         },
 
         publishedYear: {
@@ -30,6 +31,12 @@ const bookSchema = new mongoose.Schema(
             required: true,
             min: 0,
             default: 1
+        },
+
+        coverImage: {
+            type: String,
+            trim: true,
+            default: ""
         }
     },
     {

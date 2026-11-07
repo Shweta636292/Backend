@@ -20,30 +20,61 @@ const calculateFine = (dueDate, checkDate) => {
 };
 
 // Borrow a book
+
 const borrowBook = async (req, res) => {
     try {
         const { bookId } = req.body;
 
+        // Validate book ID
         if (!bookId) {
             return res.status(400).json({
                 message: "Book ID is required"
             });
         }
 
-        const book = await Book.findById(bookId);
+        // Check whether book exists
+        const existingBook = await Book.findById(bookId);
 
-        if (!book) {
+        if (!existingBook) {
             return res.status(404).json({
                 message: "Book not found"
             });
         }
 
-        if (book.quantity <= 0) {
+        // Prevent duplicate active borrowing
+        const existingBorrow = await Borrow.findOne({
+            book: bookId,
+            borrower: req.user.userId,
+            status: "borrowed"
+        });
+
+        if (existingBorrow) {
+            return res.status(400).json({
+                message: "You have already borrowed this book"
+            });
+        }
+
+        // Atomically decrease available quantity
+        const book = await Book.findOneAndUpdate(
+            {
+                _id: bookId,
+                quantity: { $gt: 0 }
+            },
+            {
+                $inc: { quantity: -1 }
+            },
+            {
+                new: true
+            }
+        );
+
+        if (!book) {
             return res.status(400).json({
                 message: "Book is not available"
             });
         }
 
+        // Set due date to 14 days from now
         const dueDate = new Date();
         dueDate.setDate(dueDate.getDate() + 14);
 
@@ -52,9 +83,6 @@ const borrowBook = async (req, res) => {
             borrower: req.user.userId,
             dueDate
         });
-
-        book.quantity -= 1;
-        await book.save();
 
         res.status(201).json({
             message: "Book borrowed successfully",
