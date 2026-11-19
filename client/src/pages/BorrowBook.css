@@ -1,0 +1,161 @@
+
+.borrow-books-page {
+  min-height: 100vh;
+  padding: 35px;
+  background: #f8f7fc;
+  color: #302942;
+}
+
+.borrow-books-header {
+  margin-bottom: 28px;
+}
+
+.borrow-books-header span {
+  color: #8b6bc0;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.borrow-books-header h1 {
+  margin: 10px 0;
+  font-size: 30px;
+}
+
+.borrow-books-header p {
+  color: #777287;
+}
+
+.borrow-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 600px;
+  padding: 14px 18px;
+  margin-bottom: 28px;
+  background: white;
+  border: 1px solid #eee8f7;
+  border-radius: 12px;
+}
+
+.borrow-search svg {
+  color: #8b6bc0;
+}
+
+.borrow-search input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+}
+
+.borrow-books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+.borrow-book-card {
+  overflow: hidden;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 18px #3029420d;
+}
+
+.borrow-book-image {
+  height: 190px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eee8f8;
+  color: #8b6bc0;
+  overflow: hidden;
+}
+
+.borrow-book-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.borrow-book-info {
+  padding: 20px;
+}
+
+.borrow-book-category {
+  color: #8b6bc0;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.borrow-book-info h3 {
+  margin: 10px 0 5px;
+  font-size: 18px;
+}
+
+.borrow-book-info p {
+  color: #777287;
+  font-size: 13px;
+}
+
+.borrow-availability {
+  margin: 15px 0;
+  color: #39815c;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.borrow-book-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 9px;
+  background: #7955bd;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.borrow-book-button:disabled {
+  background: #c8c3d1;
+  cursor: not-allowed;
+}
+
+.borrow-success,
+.borrow-error {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  margin-bottom: 20px;
+  border-radius: 9px;
+}
+
+.borrow-success {
+  color: #267449;
+  background: #e4f6eb;
+}
+
+.borrow-error {
+  color: #a32d2d;
+  background: #ffe8e8;
+}
+
+.borrow-loading,
+.borrow-no-books {
+  padding: 50px 20px;
+  text-align: center;
+  color: #777287;
+}
+
+.borrow-no-books svg {
+  color: #8b6bc0;
+}
+
+@media (max-width: 600px) {
+  .borrow-books-page {
+    padding: 20px;
+  }
+}
