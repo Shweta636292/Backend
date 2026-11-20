@@ -7,6 +7,8 @@ import Dashboard from "./pages/Dashboard";
 import AddBook from "./pages/AddBook";
 import Books from "./pages/book";
 import MyBorrowedBooks from "./pages/MyBorrowedBooks";
+import BorrowBook from "./pages/BorrowBook";
+import Fines from "./pages/Fines";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
        <Route path="/books/add" element={<AddBook />} />
        <Route path="/dashboard" element={<Dashboard />} />
        <Route path="/books" element={<book />} />
+       <Route path="/borrow-book" element={<BorrowBook />} />
+       <Route path="/fines" element={<Fines />} />
        <Route
   path="/my-borrowed-books"
   element={<MyBorrowedBooks />}
