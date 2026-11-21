@@ -9,6 +9,8 @@ import Books from "./pages/book";
 import MyBorrowedBooks from "./pages/MyBorrowedBooks";
 import BorrowBook from "./pages/BorrowBook";
 import Fines from "./pages/Fines";
+import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
        <Route path="/books" element={<book />} />
        <Route path="/borrow-book" element={<BorrowBook />} />
        <Route path="/fines" element={<Fines />} />
+       <Route path="/profile" element={<Profile />} />
+       <Route path="/notifications" element={<Notifications />} />
        <Route
   path="/my-borrowed-books"
   element={<MyBorrowedBooks />}
