@@ -12,6 +12,7 @@ import Fines from "./pages/Fines";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import UserManagement from "./pages/UserManagement";
+import Reports from "./pages/Reports";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
        <Route path="/borrow-book" element={<BorrowBook />} />
        <Route path="/fines" element={<Fines />} />
        <Route path="/profile" element={<Profile />} />
+       <Route path="/reports" element={<Reports />} />
        <Route path="/notifications" element={<Notifications />} />
        <Route
   path="/users"
